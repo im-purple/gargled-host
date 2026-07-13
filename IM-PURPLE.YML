@@ -1,0 +1,21 @@
+- name: Veracode DAST Action
+  # You may pin to the exact commit or the version.
+  # uses: veracode/veracode-dast-action@581406dfafd1963c333b8f515403f25a8f2541ab
+  uses: veracode/veracode-dast-action@v0.0.6
+  with:
+    # Action type: start-scan or load-results
+    action_type: 
+    # Veracode ID
+    vid: 
+    # Veracode Key
+    vkey: 
+    # DAST Config File Name (required for start-scan)
+    dast_config_file_name: # optional
+    # Veracode Application Profile Name (required for load-results)
+    profile_name: # optional
+    # your GITHUB_TOKEN
+    token: # default is ${{ github.token }}
+    # owner of the repo
+    owner: # default is ${{ github.repository_owner }}
+    # repo name
+    repo: # default is ${{ github.event.repository.name }}

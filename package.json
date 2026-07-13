@@ -1,0 +1,28 @@
+{
+  "name": "im-purple-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "type-check": "tsc --noEmit",
+    "postinstall": "allow-scripts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260708.1",
+    "@lavamoat/allow-scripts": "^5.1.0",
+    "@lavamoat/preinstall-always-fail": "^3.0.0",
+    "lavamoat": "^11.1.4",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.20.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail#3.0.0": false,
+      "wrangler>esbuild#0.28.1": true,
+      "wrangler>miniflare>sharp#0.34.5": false,
+      "wrangler>workerd#1.20260708.1": true
+    }
+  }
+}

@@ -1,1 +1,1 @@
-# gargled-host
+# im-purple project
