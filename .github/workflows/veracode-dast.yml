@@ -1,0 +1,45 @@
+name: Veracode DAST Scan
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: veracode-dast-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  start-scan:
+    name: Start DAST Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veracode DAST Action
+        # uses: veracode/veracode-dast-action@581406dfafd1963c333b8f515403f25a8f2541ab
+        uses: veracode/veracode-dast-action@v0.0.6
+        with:
+          action_type: start-scan
+          vid: ${{ secrets.VERACODE_API_ID }}
+          vkey: ${{ secrets.VERACODE_API_KEY }}
+          dast_config_file_name: ${{ vars.VERACODE_DAST_CONFIG_FILE }}
+          token: ${{ github.token }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+
+  load-results:
+    name: Load DAST Results
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Veracode DAST Action
+        # uses: veracode/veracode-dast-action@581406dfafd1963c333b8f515403f25a8f2541ab
+        uses: veracode/veracode-dast-action@v0.0.6
+        with:
+          action_type: load-results
+          vid: ${{ secrets.VERACODE_API_ID }}
+          vkey: ${{ secrets.VERACODE_API_KEY }}
+          profile_name: ${{ vars.VERACODE_PROFILE_NAME }}
+          token: ${{ github.token }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
