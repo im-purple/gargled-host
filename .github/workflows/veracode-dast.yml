@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: veracode-dast-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   start-scan:
     name: Start DAST Scan
@@ -26,7 +30,7 @@ jobs:
   load-results:
     name: Load DAST Results
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Veracode DAST Action
         # uses: veracode/veracode-dast-action@581406dfafd1963c333b8f515403f25a8f2541ab
