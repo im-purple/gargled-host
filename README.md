@@ -1,10 +1,10 @@
 # Gargled Host Worker (Logiscripts Route)
 
-Free web hosting on Cloudflare Workers, currently deployed on `logiscripts.com` while `im-purple.com` is still propagating in Cloudflare.
+Free web hosting on Cloudflare Workers, currently deployed on `logiscripts.com` while `im-purple.com` is still propagating in Cloudflare. Keep `logiscripts.com` as the active domain until Cloudflare shows `im-purple.com` as active and public DNS lookups resolve correctly, then re-add the `im-purple.com` routes and redeploy if you want to switch back.
 
 ## Overview
 
-This repository hosts a Cloudflare Worker that serves a static landing page from `im-purple.com.html`. The worker is written in TypeScript and returns that HTML for incoming requests.
+This repository hosts a Cloudflare Worker that serves a static landing page from `im-purple.com.html`. The filename is just the current template asset name; the Worker is written in TypeScript and returns that HTML for incoming requests regardless of which configured domain is pointing at it.
 
 ## Current domain
 
