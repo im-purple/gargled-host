@@ -1,4 +1,4 @@
-# Gargled Host
+# Gargled Host Worker
 
 Free web hosting on Cloudflare Workers, currently routed through `logiscripts.com` while `im-purple.com` finishes propagating.
 
