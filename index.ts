@@ -1,6 +1,7 @@
 import html from './logiscripts.com.html';
 
 const ALLOW_METHODS = 'GET, HEAD, OPTIONS';
+const HTML_CONTENT_LENGTH = new TextEncoder().encode(html).byteLength.toString();
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -28,6 +29,7 @@ export default {
     return new Response(method === 'HEAD' ? null : html, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': HTML_CONTENT_LENGTH,
       },
     });
   },
