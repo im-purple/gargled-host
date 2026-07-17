@@ -6,8 +6,7 @@ After that, you can re-add the `im-purple.com` routes and redeploy if you want t
 
 ## Overview
 
-This repository hosts a Cloudflare Worker that serves a static landing page from `im-purple.com.html`.
-The filename is intentionally decoupled from the live domain and can be renamed later for clarity without changing behavior.
+This repository hosts a Cloudflare Worker that serves a static landing page from `logiscripts.com.html`.
 The Worker simply returns that HTML for any configured route.
 
 ## Current domain
@@ -19,7 +18,7 @@ The Worker simply returns that HTML for any configured route.
 ## Project files
 
 - `index.ts` - Worker entrypoint
-- `im-purple.com.html` - Static HTML page returned by the worker
+- `logiscripts.com.html` - Static HTML page returned by the worker
 - `wrangler.toml` - Worker and route configuration
 - `package.json` - Scripts, dependencies, and LavaMoat settings
 
