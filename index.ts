@@ -1,4 +1,4 @@
-import html from './im-purple.com.html';
+import html from './logiscripts.com.html';
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
