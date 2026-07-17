@@ -34,6 +34,7 @@ export default {
     }
 
     return new Response(method === 'HEAD' ? null : html, {
+      status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
         'Content-Length': getHtmlContentLength(),
