@@ -4,13 +4,13 @@ Free web hosting on Cloudflare Workers, currently deployed on `logiscripts.com` 
 
 ## Overview
 
-This repository hosts a Cloudflare Worker that serves a static landing page from `im-purple.com.html`. The filename is just the current template asset name; the Worker is written in TypeScript and returns that HTML for incoming requests regardless of which configured domain is pointing at it.
+This repository hosts a Cloudflare Worker that serves a static landing page from `im-purple.com.html`. The filename is intentionally decoupled from the live domain and can be renamed later for clarity without changing how the Worker serves the asset; the Worker simply returns that HTML for any configured route.
 
 ## Current domain
 
 - Primary live route: `logiscripts.com`
 - Also routed for: `www.logiscripts.com`
-- The current Worker configuration only routes traffic through `logiscripts.com`; `im-purple.com` can be added back later if you want it once Cloudflare propagation is complete.
+- The current Worker configuration only routes traffic through `logiscripts.com`; `im-purple.com` can be added back later once Cloudflare propagation is complete.
 
 ## Project files
 
