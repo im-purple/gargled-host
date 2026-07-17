@@ -1,17 +1,44 @@
 import html from './logiscripts.com.html';
 
+const ALLOW_METHODS = 'GET, HEAD, OPTIONS';
+let htmlContentLength: string | undefined;
+
+function getHtmlContentLength(): string {
+  if (!htmlContentLength) {
+    htmlContentLength = new TextEncoder().encode(html).byteLength.toString();
+  }
+  return htmlContentLength;
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    // Serve the HTML file for the root path
-    return new Response(html, {
+    const method = request.method.toUpperCase();
+
+    if (method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          Allow: ALLOW_METHODS,
+        },
+      });
+    }
+
+    if (method !== 'GET' && method !== 'HEAD') {
+      return new Response('Method Not Allowed', {
+        status: 405,
+        headers: {
+          Allow: ALLOW_METHODS,
+          'Content-Type': 'text/plain; charset=utf-8',
+        },
+      });
+    }
+
+    return new Response(method === 'HEAD' ? null : html, {
+      status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': getHtmlContentLength(),
       },
     });
-  },
-
-  async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
-    console.log("Cron job fired at", new Date().toISOString());
-    // Example: call an API, update KV, write to D1, etc.
   },
 } satisfies ExportedHandler<Env>;

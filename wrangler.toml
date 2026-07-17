@@ -13,6 +13,3 @@ routes = [
 kv_namespaces = [
   { binding = "KV", id = "im_kv_im-purple" }
 ]
-
-[triggers]
-crons = ["*/5 * * * *"] # every 5 minutes
