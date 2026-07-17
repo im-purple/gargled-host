@@ -53,7 +53,7 @@ npm run deploy
 
 ## Security note
 
-This project includes `@lavamoat/preinstall-always-fail` as part of its dependency safety setup, alongside LavaMoat's allowlist configuration in `package.json`. That helps prevent unexpected lifecycle scripts from running unless they are explicitly allowed.
+This project includes `@lavamoat/preinstall-always-fail` as part of its dependency safety setup, alongside LavaMoat's allowlist configuration in `package.json`. This helps prevent unexpected lifecycle scripts from running unless they are explicitly allowed.
 
 ## Scripts
 
