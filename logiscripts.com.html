@@ -822,6 +822,27 @@
 </footer>
 
 <script>
+  // Global handler: surface unhandled promise rejections as console errors
+  // instead of silently swallowing them.
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+  });
+
+  // Eruda mobile debug console — guard against double-initialisation.
+  // Eruda may already be present if injected by a browser extension or bookmarklet.
+  if (typeof window.eruda === 'undefined') {
+    (function() {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      script.onload = function() {
+        if (typeof window.eruda !== 'undefined' && typeof window.eruda.init === 'function') {
+          window.eruda.init();
+        }
+      };
+      document.head.appendChild(script);
+    })();
+  }
+
   // Page navigation
   function gotoPage(name){
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
