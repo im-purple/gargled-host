@@ -826,7 +826,6 @@
   // instead of silently swallowing them.
   window.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled promise rejection:', event.reason);
-    event.preventDefault();
   });
 
   // Eruda mobile debug console — guard against double-initialisation.
