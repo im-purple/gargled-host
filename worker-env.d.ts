@@ -5,5 +5,5 @@ declare module '*.html' {
 
 interface Env {
   KV: KVNamespace;
-  NABULIFE_TOKEN: string;
+  NABULIFE_TOKEN?: string;
 }
