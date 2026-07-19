@@ -19,7 +19,8 @@ function escapeAttr(value: string): string {
     .replace(/>/g, '&gt;');
 }
 
-function buildHtml(token: string): string {
+function buildHtml(token?: string): string {
+  if (!token) return html;
   const meta = `<meta name="nabulife-token" content="${escapeAttr(token)}">`;
   return html.replace('</head>', `${meta}\n</head>`);
 }

@@ -830,15 +830,20 @@
 
   // Eruda mobile debug console — guard against double-initialisation.
   // Eruda may already be present if injected by a browser extension or bookmarklet.
+  // Load async so it never blocks rendering; silently ignore any failure (CSP, network, etc.).
   if (typeof window.eruda === 'undefined') {
     (function() {
       var script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      script.async = true;
       script.onload = function() {
-        if (typeof window.eruda !== 'undefined' && typeof window.eruda.init === 'function') {
-          window.eruda.init();
-        }
+        try {
+          if (typeof window.eruda !== 'undefined' && typeof window.eruda.init === 'function') {
+            window.eruda.init();
+          }
+        } catch (_) {}
       };
+      script.onerror = function() {};
       document.head.appendChild(script);
     })();
   }
