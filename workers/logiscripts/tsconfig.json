@@ -8,6 +8,6 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["index.ts", "worker-env.d.ts"],
-  "exclude": ["node_modules", "workers", "projects"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }

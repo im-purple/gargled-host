@@ -1,0 +1,15 @@
+name = "im-purple-worker"
+main = "index.ts"
+compatibility_date = "2026-06-26"
+account_id = "357f643b9930eda27adf70a6e3afd468"
+
+routes = [
+  { pattern = "logiscripts.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
+  { pattern = "www.logiscripts.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
+  { pattern = "eth.impurple.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
+  { pattern = "im.purple.logiscripts.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" }
+]
+
+kv_namespaces = [
+  { binding = "KV", id = "im_kv_im-purple" }
+]
