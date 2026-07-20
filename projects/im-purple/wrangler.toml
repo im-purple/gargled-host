@@ -1,0 +1,10 @@
+name = "im-purple-worker"
+main = "index.ts"
+compatibility_date = "2026-06-26"
+
+[triggers]
+crons = ["*/5 * * * *"] # every 5 minutes
+
+kv_namespaces = [
+  { binding = "KV", id = "im_kv_im-purple" }
+]
