@@ -5,7 +5,7 @@ import { useState } from "react";
  */
 export function BackgroundDots({ size = 12 }: { size?: number }) {
 	const [id] = useState(
-		() => `bg-dots-${Math.random().toString(36).substr(2, 9)}`,
+		() => `bg-dots-${Math.random().toString(36).substring(2, 11)}`,
 	);
 
 	return (
