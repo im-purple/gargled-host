@@ -22,7 +22,7 @@ jobs:
           action_type: start-scan
           vid: ${{ secrets.VERACODE_API_ID }}
           vkey: ${{ secrets.VERACODE_API_KEY }}
-          dast_config_file_name: ${{ vars.VERACODE_DAST_CONFIG_FILE }}
+          dast_config_file_name: ${{ vars.VERACODE_DAST_CONFIG_FILE_NAME || vars.VERACODE_DAST_CONFIG_FILE }}
           token: ${{ github.token }}
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
