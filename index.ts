@@ -7,8 +7,6 @@ const SECURITY_HEADERS: Record<string, string> = {
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Cache-Control': 'no-store',
-  'Content-Security-Policy':
-    "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';",
 };
 
 function escapeAttr(value: string): string {
