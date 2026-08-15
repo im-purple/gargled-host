@@ -31,6 +31,18 @@ export default {
     }
 
     if (method === 'OPTIONS') {
+      if (request.body !== null) {
+        return badRequest('Malformed request body');
+      }
+
+      const contentLength = request.headers.get('Content-Length');
+      if (contentLength !== null) {
+        const trimmed = contentLength.trim();
+        if (!/^\d+$/.test(trimmed) || Number.parseInt(trimmed, 10) !== 0) {
+          return badRequest('Malformed request body');
+        }
+      }
+
       if (request.headers.has('Transfer-Encoding')) {
         return badRequest('Malformed request body');
       }
