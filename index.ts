@@ -1,13 +1,26 @@
 import html from './logiscripts.com.html';
 
 const ALLOW_METHODS = 'GET, HEAD, OPTIONS';
-let htmlContentLength: string | undefined;
 
-function getHtmlContentLength(): string {
-  if (!htmlContentLength) {
-    htmlContentLength = new TextEncoder().encode(html).byteLength.toString();
-  }
-  return htmlContentLength;
+const SECURITY_HEADERS: Record<string, string> = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Cache-Control': 'no-store',
+};
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function buildHtml(token?: string): string {
+  if (!token) return html;
+  const meta = `<meta name="nabulife-token" content="${escapeAttr(token)}">`;
+  return html.replace('</head>', `${meta}\n</head>`);
 }
 
 function badRequest(message: string): Response {
@@ -60,6 +73,7 @@ export default {
         headers: {
           Allow: ALLOW_METHODS,
           'Content-Type': 'text/plain; charset=utf-8',
+          ...SECURITY_HEADERS,
         },
       });
     }
@@ -85,11 +99,15 @@ export default {
       return badRequest('Malformed request body');
     }
 
-    return new Response(method === 'HEAD' ? null : html, {
+    const body = buildHtml(env.NABULIFE_TOKEN);
+    const bodyLength = new TextEncoder().encode(body).byteLength.toString();
+
+    return new Response(method === 'HEAD' ? null : body, {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Content-Length': getHtmlContentLength(),
+        'Content-Length': bodyLength,
+        ...SECURITY_HEADERS,
       },
     });
   },
