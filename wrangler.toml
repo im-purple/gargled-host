@@ -8,7 +8,8 @@ routes = [
   { pattern = "www.logiscripts.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
   { pattern = "eth.impurple.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
   { pattern = "im.purple.logiscripts.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
-  { pattern = "impurplecom.my-gargler.workers.dev/*", zone_id = "357f643b9930eda27adf70a6e3afd468" }
+  { pattern = "im-purple.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" },
+  { pattern = "ipfs.im-purple.com/*", zone_id = "357f643b9930eda27adf70a6e3afd468" }
 ]
 
 kv_namespaces = [
