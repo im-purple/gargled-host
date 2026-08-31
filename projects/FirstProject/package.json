@@ -1,0 +1,26 @@
+{
+  "name": "gargle-auth",
+  "version": "1.0.0",
+  "description": "Purple-themed authentication system with Gargle branding",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["authentication", "gargle", "purple"],
+  "author": "im-purple",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "mongoose": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

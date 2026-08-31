@@ -1,21 +1,27 @@
-# Gargled Host Worker (Logiscripts Route)
+# gargled-host — Monorepo
 
-Free web hosting on Cloudflare Workers, currently deployed on `logiscripts.com` while `im-purple.com` is still propagating in Cloudflare.
-Keep `logiscripts.com` as the active domain until Cloudflare shows `im-purple.com` as active and public DNS lookups resolve correctly.
-After that, you can re-add the `im-purple.com` routes and redeploy if you want to switch back.
+Consolidated monorepo for all im-purple Cloudflare Workers and projects.
 
-## Overview
+## Structure
 
-This repository hosts a Cloudflare Worker that serves a static landing page from `logiscripts.com.html`.
-The Worker simply returns that HTML for any configured route.
+```
+gargled-host/
+├── workers/
+│   ├── logiscripts/    — Worker serving logiscripts.com (static HTML)
+│   ├── rest-api/       — Hono CRUD REST API backed by D1
+│   └── bantaysarado/   — Vite/React SPA + Cloudflare Workflows demo
+└── projects/
+    ├── im-purple/      — Worker serving im-purple.com
+    └── FirstProject/   — Gargle auth debugging project
+```
 
-## Current domain
+Each subdirectory is a standalone project. Install and deploy independently from inside each directory.
 
-- Primary live route: `logiscripts.com`
-- Also routed for: `www.logiscripts.com`
-- The current Worker configuration only routes traffic through `logiscripts.com`; `im-purple.com` can be added back later once Cloudflare propagation is complete.
+## Root (logiscripts Worker)
 
-## Project files
+The root `package.json` manages the logiscripts worker and its LavaMoat security setup.
+
+## Project files (root worker)
 
 - `index.ts` - Worker entrypoint
 - `logiscripts.com.html` - Static HTML page returned by the worker

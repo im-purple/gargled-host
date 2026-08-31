@@ -1,9 +1,8 @@
 {
-  "name": "gargled-host",
+  "name": "im-purple-logiscripts",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
