@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commons Hosting — Free web, email &amp; proxy hosting, kept alive by its users</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7EF;
+    --paper-raised:#F4EEE1;
+    --pine:#1B3A2B;
+    --pine-light:#2E5641;
+    --burnt:#E8590C;
+    --burnt-dark:#C44A09;
+    --ink:#2B2B28;
+    --ink-soft:#5B5750;
+    --line:#C9BFA8;
+    --line-soft:#DCD4BF;
+    --cream-card:#FFFDF8;
+    --good:#2E5641;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+    margin:0;
+  }
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+
+  /* ---- Ledger rule: signature divider ---- */
+  .ledger-rule{
+    border:none;
+    height:6px;
+    background-image:
+      linear-gradient(var(--ink) 0 1px, transparent 1px 4px),
+      linear-gradient(var(--ink) 0 1px, transparent 1px 4px);
+    background-size:100% 1px;
+    background-position:0 0, 0 4px;
+    background-repeat:repeat-x;
+    opacity:0.55;
+    margin:0;
+  }
+  .ledger-rule.thin{height:4px;opacity:0.35;}
+
+  /* ---- Layout shell ---- */
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* ---- Top bar / nav ---- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--paper);
+    border-bottom:2px solid var(--ink);
+  }
+  .topbar-inner{
+    max-width:1120px;margin:0 auto;padding:0 32px;
+    display:flex;align-items:center;justify-content:space-between;
+    height:76px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--pine);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--paper);font-family:'Fraunces',serif;font-weight:700;font-size:18px;
+    flex-shrink:0;
+  }
+  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
+  .brand-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:0.04em;text-transform:uppercase;margin-top:1px;}
+
+  nav.maintabs{display:flex;gap:4px;flex-wrap:wrap;}
+  nav.maintabs button{
+    font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+    background:none;border:none;color:var(--ink-soft);
+    padding:10px 14px;cursor:pointer;border-radius:3px;
+    transition:background .15s, color .15s;
+    white-space:nowrap;
+  }
+  nav.maintabs button:hover{background:var(--paper-raised);color:var(--ink);}
+  nav.maintabs button.active{color:var(--pine);font-weight:600;}
+  nav.maintabs button:focus-visible{outline:2px solid var(--burnt);outline-offset:2px;}
+
+  .nav-toggle{display:none;background:none;border:2px solid var(--ink);border-radius:4px;padding:8px 10px;font-size:14px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+
+  /* ---- Buttons ---- */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+    padding:13px 24px;border-radius:3px;cursor:pointer;border:2px solid var(--ink);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--burnt);color:#fff;border-color:var(--burnt);}
+  .btn-primary:hover{background:var(--burnt-dark);border-color:var(--burnt-dark);}
+  .btn-ink{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .btn-ink:hover{background:#000;}
+  .btn-outline{background:transparent;color:var(--ink);}
+  .btn-outline:hover{background:var(--paper-raised);}
+  .btn-pine{background:var(--pine);color:#fff;border-color:var(--pine);}
+  .btn-pine:hover{background:var(--pine-light);}
+  .btn:focus-visible{outline:2px solid var(--burnt);outline-offset:2px;}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* ---- Stamp badge ---- */
+  .stamp{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+    letter-spacing:0.08em;text-transform:uppercase;
+    border:1.5px solid currentColor;border-radius:20px;
+    padding:5px 12px;
+    transform:rotate(-1.5deg);
+  }
+  .stamp.active{color:var(--good);}
+  .stamp.free{color:var(--burnt);}
+  .stamp.dot::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;}
+
+  /* ============ HERO (Landing) ============ */
+  .hero{padding:84px 0 64px;}
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--pine);font-weight:500;
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .hero-eyebrow::before{content:'';width:28px;height:2px;background:var(--burnt);display:inline-block;}
+  .hero h1{font-size:clamp(38px,5.4vw,62px);line-height:1.05;max-width:780px;}
+  .hero h1 em{font-style:italic;color:var(--pine);}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);max-width:560px;margin:24px 0 36px;}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:56px;}
+
+  .ledger-strip{
+    border-top:2px solid var(--ink);
+    border-bottom:2px solid var(--ink);
+    padding:0;
+    margin-top:8px;
+  }
+  .ledger-strip-inner{
+    display:grid;grid-template-columns:repeat(4,1fr);
+  }
+  .ledger-item{
+    padding:22px 24px;
+    border-right:1px solid var(--line);
+  }
+  .ledger-item:last-child{border-right:none;}
+  .ledger-num{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--pine);}
+  .ledger-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;}
+
+  /* ============ Section pattern ============ */
+  section.block{padding:72px 0;}
+  .block-head{margin-bottom:40px;max-width:680px;}
+  .block-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--burnt);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;display:block;}
+  .block-head h2{font-size:clamp(26px,3.4vw,36px);}
+  .block-head p{color:var(--ink-soft);margin-top:14px;font-size:16px;}
+
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ink);border:1px solid var(--ink);}
+  .card{background:var(--cream-card);padding:30px 26px;}
+  .card h3{font-size:19px;margin-bottom:10px;}
+  .card p{color:var(--ink-soft);font-size:14.5px;margin:0;}
+  .card .card-icon{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--burnt);margin-bottom:14px;letter-spacing:0.05em;}
+
+  footer{
+    border-top:2px solid var(--ink);
+    padding:48px 0 36px;
+    margin-top:0;
+  }
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:36px;}
+  .footer-grid h4{font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:14px;}
+  .footer-grid a{display:block;font-size:14px;color:var(--ink);margin-bottom:9px;}
+  .footer-grid a:hover{color:var(--burnt);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink-soft);flex-wrap:wrap;gap:10px;}
+
+  /* ============ Generic inner page header ============ */
+  .page-head{padding:56px 0 40px;border-bottom:2px solid var(--ink);}
+  .page-head .block-eyebrow{margin-bottom:14px;}
+  .page-head h1{font-size:clamp(32px,4.4vw,46px);}
+  .page-head p{color:var(--ink-soft);max-width:600px;margin-top:16px;font-size:16.5px;}
+
+  /* ============ Forms ============ */
+  .form-shell{max-width:560px;margin:0 auto;padding:56px 0 96px;}
+  .form-card{
+    background:var(--cream-card);
+    border:2px solid var(--ink);
+    padding:44px 40px;
+  }
+  .form-card h2{font-size:24px;margin-bottom:8px;}
+  .form-card .form-sub{color:var(--ink-soft);font-size:14.5px;margin-bottom:30px;}
+  .field{margin-bottom:20px;}
+  .field label{
+    display:block;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+    text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);
+    margin-bottom:7px;
+  }
+  .field input,.field select,.field textarea{
+    width:100%;padding:13px 14px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);border-radius:2px;
+    transition:border-color .15s;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--burnt);
+  }
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .field-hint{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+  .checkrow{display:flex;align-items:flex-start;gap:10px;margin:22px 0;}
+  .checkrow input{margin-top:3px;width:16px;height:16px;accent-color:var(--burnt);flex-shrink:0;}
+  .checkrow label{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+  .checkrow a{color:var(--pine);text-decoration:underline;}
+  .form-foot{margin-top:24px;text-align:center;font-size:14px;color:var(--ink-soft);}
+  .form-foot a{color:var(--burnt);font-weight:600;}
+  .divider-or{display:flex;align-items:center;gap:14px;margin:28px 0;color:var(--ink-soft);font-size:12px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;}
+  .divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--line);}
+
+  /* ============ Compliance / About / Vision (text pages) ============ */
+  .text-page{max-width:760px;margin:0 auto;padding:56px 0 96px;}
+  .text-page h2{font-size:22px;margin:44px 0 14px;}
+  .text-page h2:first-child{margin-top:0;}
+  .text-page p{color:var(--ink-soft);margin:0 0 16px;font-size:15.5px;}
+  .text-page ul{color:var(--ink-soft);font-size:15.5px;padding-left:22px;margin:0 0 16px;}
+  .text-page li{margin-bottom:8px;}
+  .toc-box{
+    background:var(--paper-raised);border:1.5px solid var(--line);padding:24px 26px;margin-bottom:40px;
+  }
+  .toc-box .block-eyebrow{margin-bottom:12px;}
+  .toc-box a{display:block;font-size:14.5px;padding:6px 0;color:var(--pine);border-bottom:1px dashed var(--line-soft);}
+  .toc-box a:last-child{border-bottom:none;}
+  .toc-box a:hover{color:var(--burnt);}
+
+  /* ============ About / Vision split ============ */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;padding:64px 0;}
+  .split h2{font-size:30px;margin-bottom:18px;}
+  .split p{color:var(--ink-soft);font-size:15.5px;margin-bottom:16px;}
+  .quote-block{
+    border-left:3px solid var(--burnt);padding-left:22px;
+    font-family:'Fraunces',serif;font-style:italic;font-size:21px;color:var(--ink);
+    line-height:1.45;
+  }
+  .quote-attr{font-family:'JetBrains Mono',monospace;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:14px;text-transform:uppercase;letter-spacing:0.04em;}
+
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:16px;}
+  .team-card{text-align:center;}
+  .team-avatar{
+    width:72px;height:72px;border-radius:50%;margin:0 auto 12px;
+    background:var(--paper-raised);border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--pine);
+  }
+  .team-card h4{font-size:14.5px;margin-bottom:2px;}
+  .team-card span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+
+  /* ============ Donation ============ */
+  .donate-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;padding:56px 0 96px;align-items:start;}
+  .donate-amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0 24px;}
+  .amount-btn{
+    border:1.5px solid var(--line);background:var(--paper);padding:16px 10px;text-align:center;
+    cursor:pointer;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;
+    transition:border-color .15s,background .15s;
+  }
+  .amount-btn:hover{border-color:var(--burnt);}
+  .amount-btn.selected{border-color:var(--burnt);background:#FBE9DC;color:var(--burnt-dark);}
+  .impact-card{background:var(--paper-raised);border:1.5px solid var(--line);padding:26px;margin-bottom:14px;}
+  .impact-card .impact-amt{font-family:'Fraunces',serif;font-size:22px;color:var(--pine);font-weight:600;}
+  .impact-card p{margin:6px 0 0;font-size:14px;color:var(--ink-soft);}
+  .progress-track{height:10px;background:var(--paper-raised);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0 8px;}
+  .progress-fill{height:100%;background:var(--burnt);width:64%;}
+  .progress-label{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
+
+  /* ============ Suggestion / Report ============ */
+  .sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);margin:48px 0 96px;}
+  .sr-panel{padding:44px 40px;}
+  .sr-panel + .sr-panel{border-left:2px solid var(--ink);}
+  .sr-icon{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+  .sr-panel.suggestion .sr-icon{color:var(--pine);}
+  .sr-panel.report .sr-icon{color:var(--burnt);}
+  .sr-panel h3{font-size:21px;margin-bottom:10px;}
+  .sr-panel p.lead{color:var(--ink-soft);font-size:14.5px;margin-bottom:26px;}
+  .severity-row{display:flex;gap:8px;margin-bottom:4px;}
+  .severity-pill{
+    flex:1;text-align:center;padding:9px 6px;border:1.5px solid var(--line);font-size:12.5px;
+    font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:2px;
+  }
+  .severity-pill.sel-low{border-color:var(--good);background:#E9F1EC;color:var(--good);}
+  .severity-pill.sel-med{border-color:var(--burnt);background:#FBE9DC;color:var(--burnt-dark);}
+  .severity-pill.sel-high{border-color:#B3261E;background:#FBE8E6;color:#B3261E;}
+
+  @media (max-width:880px){
+    .nav-toggle{display:block;}
+    nav.maintabs{display:none;position:absolute;top:76px;left:0;right:0;background:var(--paper);border-bottom:2px solid var(--ink);flex-direction:column;padding:8px;}
+    nav.maintabs.open{display:flex;}
+    .ledger-strip-inner{grid-template-columns:repeat(2,1fr);}
+    .ledger-item:nth-child(2){border-right:none;}
+    .ledger-item{border-bottom:1px solid var(--line);}
+    .card-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:28px;}
+    .split{grid-template-columns:1fr;gap:32px;}
+    .donate-grid{grid-template-columns:1fr;}
+    .sr-grid{grid-template-columns:1fr;}
+    .sr-panel + .sr-panel{border-left:none;border-top:2px solid var(--ink);}
+    .field-row{grid-template-columns:1fr;}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div>
+        <div class="brand-name">Commons Hosting</div>
+        <div class="brand-tag">Public infrastructure, kept by its users</div>
+      </div>
+    </div>
+    <button class="nav-toggle" onclick="document.querySelector('nav.maintabs').classList.toggle('open')">Menu ▾</button>
+    <nav class="maintabs" id="maintabs">
+      <button data-page="landing" class="active">Home</button>
+      <button data-page="about">About</button>
+      <button data-page="vision">Vision</button>
+      <button data-page="compliance">Compliance</button>
+      <button data-page="donate">Donate</button>
+      <button data-page="suggest">Feedback</button>
+      <button data-page="login">Log in</button>
+      <button data-page="register">Get hosting</button>
+    </nav>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LANDING PAGE -->
+<!-- ============================================================ -->
+<div class="page active" id="page-landing">
+
+  <div class="wrap hero">
+    <div class="hero-eyebrow">Entry No. 0014 — Open to the public</div>
+    <h1>Hosting that stays free<br>because <em>we</em> keep it that way.</h1>
+    <p class="hero-sub">Web hosting, email, and a reverse proxy for anyone who needs a place to put their site online — funded by the people who use it, not by ads or your data.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" data-goto="register">Create a free account</button>
+      <button class="btn btn-outline" data-goto="vision">Read why we built this</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="ledger-strip">
+      <div class="ledger-strip-inner">
+        <div class="ledger-item">
+          <div class="ledger-num mono">12,406</div>
+          <div class="ledger-label">Sites hosted free</div>
+        </div>
+        <div class="ledger-item">
+          <div class="ledger-num mono">99.95%</div>
+          <div class="ledger-label">Uptime, last 90 days</div>
+        </div>
+        <div class="ledger-item">
+          <div class="ledger-num mono">$4,180</div>
+          <div class="ledger-label">Raised this month</div>
+        </div>
+        <div class="ledger-item">
+          <div class="ledger-num mono">0</div>
+          <div class="ledger-label">Ads shown, ever</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="block-head">
+        <span class="block-eyebrow">What's included</span>
+        <h2>Three things, done properly, for free.</h2>
+        <p>Paid plans exist for people who outgrow the free tier — but nothing on the free tier is a trial. It's the real thing, just capped.</p>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">01 — WEB</div>
+          <h3>Web hosting</h3>
+          <p>One site, your own subdomain, free SSL, and one-click install for WordPress and static sites. No watermarks, no forced ads on your visitors.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">02 — MAIL</div>
+          <h3>Email hosting</h3>
+          <p>One real inbox with IMAP and SMTP access — not a redirect. Properly configured SPF, DKIM, and DMARC so your mail actually lands.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">03 — PROXY</div>
+          <h3>Reverse proxy</h3>
+          <p>Your traffic routed and SSL-terminated automatically. Point a domain at us and it's handled — no manual certificate renewals, ever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="ledger-rule">
+
+  <section class="block">
+    <div class="wrap split" style="padding:64px 0 0;">
+      <div>
+        <span class="block-eyebrow">Why it's free</span>
+        <h2>We're funded by donations, not your data.</h2>
+        <p>Running servers costs real money. We cover it through voluntary donations from people who can afford to give a little, plus optional paid plans for people who need more room. We will never sell access to your information, and we will never run ads against your visitors.</p>
+        <button class="btn btn-pine" data-goto="donate">Support the commons</button>
+      </div>
+      <div class="quote-block">
+        Free hosting shouldn't mean someone else owns your data instead of money owning your site.
+        <div class="quote-attr">— Founding note, Commons Hosting</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!-- ABOUT / CONTACT -->
+<!-- ============================================================ -->
+<div class="page" id="page-about">
+  <div class="page-head wrap">
+    <span class="block-eyebrow">Who's behind this</span>
+    <h1>About &amp; contact</h1>
+    <p>Commons Hosting is run by a small team and a much larger group of volunteers who answer support questions, review abuse reports, and keep the lights on.</p>
+  </div>
+
+  <div class="wrap">
+    <section class="block" style="padding-bottom:0;">
+      <div class="block-head">
+        <span class="block-eyebrow">The team</span>
+        <h2>Five people, mostly part-time.</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card"><div class="team-avatar">R</div><h4>Rosa Bautista</h4><span>Infrastructure</span></div>
+        <div class="team-card"><div class="team-avatar">D</div><h4>Dion Marchetti</h4><span>Abuse &amp; trust</span></div>
+        <div class="team-card"><div class="team-avatar">A</div><h4>Amara Osei</h4><span>Support</span></div>
+        <div class="team-card"><div class="team-avatar">L</div><h4>Lena Vogt</h4><span>Finance &amp; donations</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <span class="block-eyebrow">Get in touch</span>
+        <h2>Reach a real person.</h2>
+        <p>General questions, partnership inquiries, and press — all routed to the team, read within two business days.</p>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">SUPPORT</div>
+          <h3>Account help</h3>
+          <p>support@commonshosting.org<br>Typical reply: under 24 hours</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">ABUSE</div>
+          <h3>Report misuse</h3>
+          <p>abuse@commonshosting.org<br>Or use the Report a problem page</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">PRESS</div>
+          <h3>Media &amp; partners</h3>
+          <p>hello@commonshosting.org<br>Typical reply: 2 business days</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- VISION / MISSION -->
+<!-- ============================================================ -->
+<div class="page" id="page-vision">
+  <div class="page-head wrap">
+    <span class="block-eyebrow">What we're for</span>
+    <h1>Vision &amp; mission</h1>
+    <p>Two short statements that decide everything else we build.</p>
+  </div>
+
+  <div class="wrap">
+    <section class="block split">
+      <div>
+        <span class="block-eyebrow">Mission</span>
+        <h2>Keep a basic web presence within reach of anyone, regardless of what they can pay.</h2>
+        <p>A website and a working email address are close to table stakes for participating in modern life — applying for work, running a small project, reaching family. We exist to make sure cost is never the reason someone goes without either.</p>
+      </div>
+      <div>
+        <span class="block-eyebrow">Vision</span>
+        <h2>A web where the smallest sites are as well-kept as the biggest ones.</h2>
+        <p>We measure success not by growth, but by how rarely our free tier feels like a lesser product. If a free account on Commons Hosting ever feels like a worse experience just because no money changed hands, we've failed at the thing we set out to do.</p>
+      </div>
+    </section>
+
+    <hr class="ledger-rule">
+
+    <section class="block">
+      <div class="block-head">
+        <span class="block-eyebrow">What this means in practice</span>
+        <h2>Principles we hold ourselves to.</h2>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">→</div>
+          <h3>No data resale</h3>
+          <p>Free accounts are never the product. We don't sell usage data, browsing data, or email content to anyone, ever.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">→</div>
+          <h3>No artificial limits</h3>
+          <p>Free-tier limits exist because servers cost money — not to pressure you into upgrading. We publish our limits and the reasons for them.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">→</div>
+          <h3>Open books</h3>
+          <p>Donation totals and where the money goes are public on the Donate page, updated monthly.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- COMPLIANCE -->
+<!-- ============================================================ -->
+<div class="page" id="page-compliance">
+  <div class="page-head wrap">
+    <span class="block-eyebrow">Legal &amp; policy</span>
+    <h1>Compliance</h1>
+    <p>The rules that govern how we operate, what we ask of you, and how to report something that breaks them.</p>
+  </div>
+
+  <div class="text-page">
+    <div class="toc-box">
+      <span class="block-eyebrow">On this page</span>
+      <a href="#tos">Terms of service</a>
+      <a href="#aup">Acceptable use policy</a>
+      <a href="#privacy">Privacy &amp; data handling</a>
+      <a href="#dmca">DMCA &amp; takedown process</a>
+      <a href="#data-req">Data &amp; law enforcement requests</a>
+    </div>
+
+    <h2 id="tos">Terms of service</h2>
+    <p>By creating an account, you agree to use Commons Hosting for lawful purposes and to keep your account credentials secure. Free-tier accounts are subject to the resource limits stated on your plan page; exceeding them may result in throttling or suspension with notice where possible.</p>
+    <p>We may suspend accounts without prior notice in cases of active abuse, security compromise, or imminent harm to other users — see the Acceptable Use Policy below for specifics.</p>
+
+    <h2 id="aup">Acceptable use policy</h2>
+    <p>The following are not permitted on any plan, free or paid:</p>
+    <ul>
+      <li>Hosting malware, phishing pages, or content designed to compromise other systems</li>
+      <li>Sending unsolicited bulk email ("spam") or operating open mail relays</li>
+      <li>Hosting content that exploits or sexualizes minors, in any form</li>
+      <li>Using shared infrastructure for cryptocurrency mining or denial-of-service tooling</li>
+      <li>Impersonating another person, organization, or service for deceptive purposes</li>
+    </ul>
+    <p>Violations are handled through our Report a problem page and reviewed by the abuse &amp; trust team within 48 hours.</p>
+
+    <h2 id="privacy">Privacy &amp; data handling</h2>
+    <p>We collect the minimum data needed to operate your account: email, billing details for paid plans, and server logs retained for 30 days for abuse investigation. We do not sell or share this data with advertisers or data brokers. Full data retention schedules are available on request.</p>
+
+    <h2 id="dmca">DMCA &amp; takedown process</h2>
+    <p>Copyright holders may submit takedown notices to abuse@commonshosting.org. We respond to valid notices within 2 business days and notify the affected account holder, who may submit a counter-notice per standard DMCA procedure.</p>
+
+    <h2 id="data-req">Data &amp; law enforcement requests</h2>
+    <p>We disclose user data to law enforcement only in response to valid legal process (subpoena, court order, or warrant, as applicable), and we notify the affected user unless legally prohibited from doing so.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- REGISTRATION -->
+<!-- ============================================================ -->
+<div class="page" id="page-register">
+  <div class="form-shell wrap">
+    <div class="form-card">
+      <span class="stamp free dot" style="margin-bottom:18px;">Free tier — no card required</span>
+      <h2>Create your account</h2>
+      <p class="form-sub">Takes about two minutes. You'll get a working site and inbox today.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label>First name</label>
+          <input type="text" placeholder="Rosa">
+        </div>
+        <div class="field">
+          <label>Last name</label>
+          <input type="text" placeholder="Bautista">
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Choose a subdomain</label>
+        <input type="text" placeholder="yourname">
+        <div class="field-hint">Your site: yourname.commonshosting.org — changeable later on paid plans</div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="At least 10 characters">
+      </div>
+
+      <div class="checkrow">
+        <input type="checkbox" id="tos-check">
+        <label for="tos-check">I agree to the <a href="#" data-goto="compliance">Terms of Service</a> and <a href="#" data-goto="compliance">Acceptable Use Policy</a>, and I understand free-tier limits apply.</label>
+      </div>
+
+      <button class="btn btn-primary btn-block">Create free account</button>
+
+      <div class="divider-or">or continue with</div>
+      <div class="field-row">
+        <button class="btn btn-outline btn-block">Google</button>
+        <button class="btn btn-outline btn-block">GitHub</button>
+      </div>
+
+      <div class="form-foot">Already have an account? <a href="#" data-goto="login">Log in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LOGIN -->
+<!-- ============================================================ -->
+<div class="page" id="page-login">
+  <div class="form-shell wrap">
+    <div class="form-card">
+      <h2>Log in</h2>
+      <p class="form-sub">Welcome back — your sites and inbox are right where you left them.</p>
+
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••••">
+        <div class="field-hint" style="text-align:right;"><a href="#" style="color:var(--burnt);">Forgot password?</a></div>
+      </div>
+
+      <div class="checkrow">
+        <input type="checkbox" id="remember-check">
+        <label for="remember-check">Keep me logged in on this device</label>
+      </div>
+
+      <button class="btn btn-primary btn-block">Log in</button>
+
+      <div class="divider-or">or continue with</div>
+      <div class="field-row">
+        <button class="btn btn-outline btn-block">Google</button>
+        <button class="btn btn-outline btn-block">GitHub</button>
+      </div>
+
+      <div class="form-foot">New here? <a href="#" data-goto="register">Create a free account</a></div>
+    </div>
+
+    <div style="text-align:center;margin-top:28px;">
+      <button class="btn btn-outline" style="border-style:dashed;">Log out of all sessions</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DONATION -->
+<!-- ============================================================ -->
+<div class="page" id="page-donate">
+  <div class="page-head wrap">
+    <span class="block-eyebrow">Keep it running</span>
+    <h1>Support the commons</h1>
+    <p>Every donation goes straight to server costs, bandwidth, and the abuse team that keeps free hosting from being overrun. No middle layer, no ad sales to make up the difference.</p>
+  </div>
+
+  <div class="wrap donate-grid">
+    <div>
+      <h3 style="font-family:'Fraunces',serif;font-size:20px;margin-bottom:8px;">Choose an amount</h3>
+      <p style="color:var(--ink-soft);font-size:14.5px;margin:0 0 6px;">One-time or monthly — cancel anytime, no questions asked.</p>
+      <div class="donate-amounts">
+        <div class="amount-btn">$5</div>
+        <div class="amount-btn selected">$15</div>
+        <div class="amount-btn">$30</div>
+        <div class="amount-btn">$50</div>
+        <div class="amount-btn">$100</div>
+        <div class="amount-btn">Other</div>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Frequency</label>
+        <select>
+          <option>Give monthly</option>
+          <option>Give once</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block">Donate $15 / month</button>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px;text-align:center;">Receipts emailed for tax purposes. Commons Hosting is a fiscally sponsored nonprofit project.</p>
+    </div>
+
+    <div>
+      <div class="impact-card">
+        <div class="impact-amt">$5</div>
+        <p>Covers one free account's bandwidth for a full year.</p>
+      </div>
+      <div class="impact-card">
+        <div class="impact-amt">$30</div>
+        <p>Covers a month of malware scanning across all free-tier uploads.</p>
+      </div>
+      <div class="impact-card">
+        <div class="impact-amt">$100</div>
+        <p>Funds a day of abuse-report review by our trust &amp; safety volunteers.</p>
+      </div>
+
+      <div style="margin-top:28px;">
+        <div class="progress-label"><span class="mono">This month</span><span class="mono">$4,180 / $6,500</span></div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">64% of this month's server costs covered so far.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SUGGESTION + REPORT -->
+<!-- ============================================================ -->
+<div class="page" id="page-suggest">
+  <div class="page-head wrap">
+    <span class="block-eyebrow">Tell us something</span>
+    <h1>Feedback &amp; reports</h1>
+    <p>Two different forms for two different things — a feature idea isn't urgent the way abuse is, and we want both handled at the right speed.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="sr-grid">
+      <div class="sr-panel suggestion">
+        <div class="sr-icon">Suggestion</div>
+        <h3>Suggest an improvement</h3>
+        <p class="lead">Ideas for features, plan changes, or things that felt clunky. Reviewed weekly by the team, not guaranteed to ship — but always read.</p>
+
+        <div class="field">
+          <label>What's your idea?</label>
+          <textarea rows="4" placeholder="I'd love to be able to..."></textarea>
+        </div>
+        <div class="field">
+          <label>Your email (optional)</label>
+          <input type="email" placeholder="So we can follow up">
+        </div>
+        <button class="btn btn-pine btn-block">Send suggestion</button>
+      </div>
+
+      <div class="sr-panel report">
+        <div class="sr-icon">Report a problem</div>
+        <h3>Report abuse or a bug</h3>
+        <p class="lead">Spam, phishing, malware, harassment, or something broken on our end. Reviewed within 48 hours; urgent reports are prioritized first.</p>
+
+        <div class="field">
+          <label>Severity</label>
+          <div class="severity-row">
+            <div class="severity-pill">Low</div>
+            <div class="severity-pill sel-med">Medium</div>
+            <div class="severity-pill">High</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>What happened?</label>
+          <textarea rows="3" placeholder="Include the site, account, or URL involved if you can"></textarea>
+        </div>
+        <div class="field">
+          <label>Your email (for follow-up)</label>
+          <input type="email" placeholder="you@example.com">
+        </div>
+        <button class="btn btn-primary btn-block">Submit report</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER (shared) -->
+<!-- ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:14px;">
+          <div class="brand-mark">C</div>
+          <div class="brand-name">Commons Hosting</div>
+        </div>
+        <p style="color:var(--ink-soft);font-size:14px;max-width:280px;">Free web, email, and proxy hosting, funded by the people who use it.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <a href="#" data-goto="register">Get hosting</a>
+        <a href="#" data-goto="login">Log in</a>
+        <a href="#" data-goto="donate">Donate</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#" data-goto="about">About &amp; contact</a>
+        <a href="#" data-goto="vision">Vision &amp; mission</a>
+        <a href="#" data-goto="compliance">Compliance</a>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <a href="#" data-goto="suggest">Suggest a feature</a>
+        <a href="#" data-goto="suggest">Report a problem</a>
+      </div>
+    </div>
+    <hr class="ledger-rule thin" style="margin-bottom:24px;">
+    <div class="footer-bottom">
+      <span>© 2026 Commons Hosting — a community-funded project</span>
+      <span class="stamp active dot">All systems active</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Global handler: surface unhandled promise rejections as console errors
+  // instead of silently swallowing them.
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+  });
+
+  // Eruda mobile debug console — guard against double-initialisation.
+  // Eruda may already be present if injected by a browser extension or bookmarklet.
+  // Load async so it never blocks rendering; silently ignore any failure (CSP, network, etc.).
+  if (typeof window.eruda === 'undefined') {
+    (function() {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      script.async = true;
+      script.onload = function() {
+        try {
+          if (typeof window.eruda !== 'undefined' && typeof window.eruda.init === 'function') {
+            window.eruda.init();
+          }
+        } catch (_) {}
+      };
+      script.onerror = function() {};
+      document.head.appendChild(script);
+    })();
+  }
+
+  // Page navigation
+  function gotoPage(name){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + name);
+    if(target) target.classList.add('active');
+    document.querySelectorAll('nav.maintabs button').forEach(b => {
+      b.classList.toggle('active', b.dataset.page === name);
+    });
+    document.querySelector('nav.maintabs').classList.remove('open');
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      gotoPage(el.dataset.goto);
+    });
+  });
+  document.querySelectorAll('nav.maintabs button').forEach(btn => {
+    btn.addEventListener('click', () => gotoPage(btn.dataset.page));
+  });
+
+  // Donation amount selection
+  document.querySelectorAll('.amount-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  // Severity pill selection
+  document.querySelectorAll('.severity-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const row = pill.parentElement;
+      row.querySelectorAll('.severity-pill').forEach(p => p.classList.remove('sel-low','sel-med','sel-high'));
+      const text = pill.textContent.trim().toLowerCase();
+      pill.classList.add('sel-' + (text === 'low' ? 'low' : text === 'high' ? 'high' : 'med'));
+    });
+  });
+</script>
+
+</body>
+</html>
